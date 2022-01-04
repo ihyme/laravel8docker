@@ -1,0 +1,42 @@
+version : '3.1'
+networks:
+  laravel:
+services:
+  site : 
+    build:
+      context: ./dockerfiles
+      dockerfile : nginx.dockerfile
+    ports:
+      - 80:80
+    volumes:
+      - ./src:/var/www/html
+    networks:
+      - laravel
+  php :
+    build:
+      context: ./dockerfiles
+      dockerfile : php.dockerfile
+    volumes:
+      - ./src:/var/www/html
+    networks:
+      - laravel
+  db :
+    image : postgres
+    restart : always
+    environment:
+      POSTGRES_PASSWORD: parola56
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - 5432:5432
+    volumes:
+      - ./pgdatabase:/var/lib/postgresql/data/pgdata
+    networks:
+      - laravel
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - laravel
+
